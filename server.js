@@ -1,13 +1,14 @@
 import express from 'express'
 import cors from 'cors'
+import bodyParser from 'body-parser'
 
-const app = express({ limit: '100mb' })
-app.use(express.json())
+const app = express()
+app.use(bodyParser.json({ limit: '100mb' }))
 app.use(cors())
 
-app.use(express.static('./public'))
-app.use(express.bodyParser({ limit: '100mb' }))
-app.use(express.urlencoded({ extended: true, limit: '100mb' }))
+// app.use(express.static('./public'))
+// app.use(bodyParser({ limit: '100mb' }))
+// // app.use(express.urlencoded({ extended: true, limit: '100mb' }))
 
 app.get('/', function (req, res) {
   res.send('Test Server!')
