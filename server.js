@@ -1,21 +1,31 @@
 import express from 'express'
 import cors from 'cors'
-import bodyParser from 'body-parser'
+import fs from 'fs/promises'
 
+import * as dotenv from 'dotenv'
+
+import { getProducts, exportToXml, filterProducts } from './helpers.js'
+
+dotenv.config()
 const app = express()
-app.use(bodyParser.json({ limit: '100mb' }))
+app.use(express.static('./public'))
 app.use(cors())
 
-// app.use(express.static('./public'))
-// app.use(bodyParser({ limit: '100mb' }))
-// // app.use(express.urlencoded({ extended: true, limit: '100mb' }))
+app.get('/makexml', async function (req, res) {
+  const allProducts = await getProducts()
+  if (allProducts === undefined || allProducts.length <= 0) return res.status(500).json({ message: 'Κάτι πήγε στραβά με το Wix API.' })
+  const products = filterProducts(allProducts)
+  if (products.length <= 0) return res.status(500).json({ message: 'Δεν βρέθηκαν προϊόντα!' })
+  const xmlProducts = exportToXml(products)
+  if (xmlProducts === undefined) return res.status(500).json('Κάτι πήγε στραβά με το Xml.')
 
-app.get('/', function (req, res) {
-  res.send('Test Server!')
-})
-
-app.post('/makexml', function (req, res) {
-  res.json(req.body)
+  fs.writeFile('./public/skroutz_feed.xml', xmlProducts, (err) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).json('Κάτι πήγε στραβά με το ανέβασμα του αρχείου.')
+    }
+  })
+  return res.status(200).json('To Xml δημιουργήθηκε επιτυχώς!')
 })
 
 app.listen(5000, console.log(`Server is running on port 5000`))
