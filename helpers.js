@@ -78,7 +78,7 @@ function convertHtmlEntities(str) {
   str = str.replace(/&lt;/g, '<')
   str = str.replace(/\n/g, '')
   str = str.replace(/\n/g, '')
-  str = str.replace(/<br>/g, '')
+  // str = str.replace(/<br>/g, '')
   str = str.replace(/<p>/g, '')
   str = str.replace(/<\/p>/g, '')
   return str
