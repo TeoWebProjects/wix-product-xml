@@ -121,11 +121,6 @@ export function filterProducts(products) {
       if (option.name === 'Χρώμα') {
         color = option.choices[0].description
       }
-      if (option.name === 'Μέγεθος') {
-        option.choices.forEach((choice) => {
-          sizes.push(choice.description)
-        })
-      }
     })
     products[i].additionalInfoSections.forEach((info) => {
       if (info.title === 'Κατηγορία') {
@@ -139,21 +134,24 @@ export function filterProducts(products) {
       }
     })
     products[i].variants.forEach((v) => {
-      let tVariant = {}
-      tVariant.variationid = v.id
-      tVariant.availability = 'Παράδοση σε 1-3 ημέρες'
-      tVariant.size = v.choices['Μέγεθος']
-      tVariant.quantity = v.stock.quantity
-      if (v.variant.priceData.discountedPrice > 0) {
-        tVariant.price = v.variant.priceData.discountedPrice
-      } else {
-        tVariant.price = v.variant.priceData.price
+      if (v.stock.quantity > 0) {
+        let tVariant = {}
+        tVariant.variationid = v.id
+        tVariant.availability = 'Παράδοση σε 1-3 ημέρες'
+        sizes.push(v.choices['Μέγεθος'])
+        tVariant.size = v.choices['Μέγεθος']
+        tVariant.quantity = v.stock.quantity
+        if (v.variant.priceData.discountedPrice > 0) {
+          tVariant.price = v.variant.priceData.discountedPrice
+        } else {
+          tVariant.price = v.variant.priceData.price
+        }
+        tVariant.link = link.trim()
+        tVariant.mpn = v.variant.sku.trim()
+        productVariations.push(tVariant)
       }
-      tVariant.link = link.trim()
-      tVariant.mpn = v.variant.sku.trim()
-      productVariations.push(tVariant)
     })
-
+    if (productVariations.length <= 0) continue
     mpn = productVariations[0].mpn
 
     if (id === undefined || id.length <= 0) continue
@@ -174,7 +172,7 @@ export function filterProducts(products) {
     let variantValid = true
 
     productVariations.forEach((pv) => {
-      if (pv.variationid === undefined || pv.variationid.length <= 0 || pv.size === undefined || pv.size.length <= 0 || pv.price === undefined || pv.price <= 0 || pv.link === undefined || pv.link.length <= 0 || pv.mpn === undefined || pv.mpn.length <= 0 || pv.quantity === undefined || pv.quantity < 0) {
+      if (pv.variationid === undefined || pv.variationid.length <= 0 || pv.size === undefined || pv.size.length <= 0 || pv.price === undefined || pv.price <= 0 || pv.link === undefined || pv.link.length <= 0 || pv.mpn === undefined || pv.mpn.length <= 0 || pv.quantity === undefined || pv.quantity <= 0) {
         variantValid = false
       }
     })
@@ -190,7 +188,7 @@ export function filterProducts(products) {
     tempProduct.featureimage = featureimage.trim()
     tempProduct.additionalImage = additionalImage
     tempProduct.color = convertHtmlEntities(color).trim()
-    tempProduct.size = sizes.join(', ')
+    tempProduct.sizes = sizes.join(', ')
     tempProduct.brand = convertHtmlEntities(brand).trim()
     tempProduct.weight = extractNumbers(convertHtmlEntities(weight)).trim()
     tempProduct.price = price
