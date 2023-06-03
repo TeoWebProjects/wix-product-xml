@@ -190,7 +190,7 @@ export function filterProducts(products) {
     tempProduct.featureimage = featureimage.trim()
     tempProduct.additionalImage = additionalImage
     tempProduct.color = convertHtmlEntities(color).trim()
-    tempProduct.sizes = sizes.join(', ')
+    tempProduct.size = sizes.join(', ')
     tempProduct.brand = convertHtmlEntities(brand).trim()
     tempProduct.weight = extractNumbers(convertHtmlEntities(weight)).trim()
     tempProduct.price = price
