@@ -179,23 +179,53 @@ export function filterProducts(products) {
 
     if (variantValid === false) continue
 
-    tempProduct.id = id.trim()
-    tempProduct.name = name.trim() + ' ' + mpn.trim()
-    tempProduct.category = convertHtmlEntities(category)
-    tempProduct.mpn = mpn.trim()
-    tempProduct.link = link.trim()
-    tempProduct.description = convertHtmlEntities(description).trim()
-    tempProduct.featureimage = featureimage.trim()
-    tempProduct.additionalImage = additionalImage
-    tempProduct.color = convertHtmlEntities(color).trim()
-    tempProduct.sizes = sizes.join(', ')
-    tempProduct.brand = convertHtmlEntities(brand).trim()
-    tempProduct.weight = extractNumbers(convertHtmlEntities(weight)).trim()
-    tempProduct.price = price
-    tempProduct.availability = 'Παράδοση σε 1-3 ημέρες'
-    tempProduct.quantity = quantity
-    tempProduct.variations = productVariations
-    productsJson.push(tempProduct)
+    // tempProduct.id = id.trim()
+    // tempProduct.name = name.trim() + ' ' + mpn.trim()
+    // tempProduct.category = convertHtmlEntities(category)
+    // tempProduct.mpn = mpn.trim()
+    // tempProduct.link = link.trim()
+    // tempProduct.description = convertHtmlEntities(description).trim()
+    // tempProduct.featureimage = featureimage.trim()
+    // tempProduct.additionalImage = additionalImage
+    // tempProduct.color = convertHtmlEntities(color).trim()
+    // tempProduct.sizes = sizes.join(', ')
+    // tempProduct.brand = convertHtmlEntities(brand).trim()
+    // tempProduct.weight = extractNumbers(convertHtmlEntities(weight)).trim()
+    // tempProduct.price = price
+    // tempProduct.availability = 'Παράδοση σε 1-3 ημέρες'
+    // tempProduct.quantity = quantity
+
+    // productVariations.forEach((variation) => {
+    //   tempProduct.variations.push(variation)
+    // })
+
+    // tempProduct.variations = productVariations.map((variation) => ({ variation: variation }))
+
+    const product = {
+      id: id.trim(),
+      name: name.trim() + ' ' + mpn.trim(),
+      category: convertHtmlEntities(category),
+      mpn: mpn.trim(),
+      link: link.trim(),
+      description: convertHtmlEntities(description).trim(),
+      featureImage: featureimage.trim(),
+      additionalImage: additionalImage,
+      color: convertHtmlEntities(color).trim(),
+      sizes: sizes.join(', '),
+      brand: convertHtmlEntities(brand).trim(),
+      weight: extractNumbers(convertHtmlEntities(weight)).trim(),
+      price: price,
+      availability: 'Παράδοση σε 1-3 ημέρες',
+      quantity: quantity,
+      // variations: {
+      //   variation: productVariations.map((variation) => variation),
+      // },
+    }
+
+    if (productVariations.length > 0) {
+      product.variations = { variation: productVariations.map((variation) => variation) }
+    }
+    productsJson.push(product)
   }
 
   return productsJson
